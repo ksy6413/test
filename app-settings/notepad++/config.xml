@@ -4,6 +4,7 @@
     <History nbMaxFile="10" inSubMenu="no" customLength="-1">
         <File filename="C:\Program Files\Notepad++\change.log" />
         <File filename="C:\Users\Admin\OneDrive\Application Settings\Notepad++\config.xml" />
+        <File filename="C:\Users\Admin\OneDrive\Application Settings\Notepad++\shortcuts.xml" />
     </History>
     <ProjectPanels>
         <ProjectPanel id="0" workSpaceFile="" />
@@ -21,7 +22,7 @@
         <GUIConfig name="ScintillaViewsSplitter">vertical</GUIConfig>
         <GUIConfig name="UserDefineDlg" position="undocked">hide</GUIConfig>
         <GUIConfig name="TabSetting" replaceBySpace="no" size="4" backspaceUnindent="no" />
-        <GUIConfig name="AppPosition" x="1920" y="0" width="1928" height="2500" isMaximized="no" />
+        <GUIConfig name="AppPosition" x="1920" y="0" width="1928" height="2496" isMaximized="no" />
         <GUIConfig name="FindWindowPosition" left="0" top="0" right="0" bottom="0" isLessModeOn="no" />
         <GUIConfig name="FinderConfig" wrappedLines="no" purgeBeforeEverySearch="no" showOnlyOneEntryPerFoundLine="yes" />
         <GUIConfig name="noUpdate" intervalDays="15" nextUpdateDate="20260214" autoUpdateMode="1">no</GUIConfig>
