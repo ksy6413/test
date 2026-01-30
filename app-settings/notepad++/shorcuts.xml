@@ -1,0 +1,57 @@
+<NotepadPlus>
+    <InternalCommands>
+        <Shortcut id="43013" Ctrl="yes" Alt="no" Shift="yes" Key="70" />
+        <Shortcut id="44086" Ctrl="yes" Alt="no" Shift="no" Key="49" />
+        <Shortcut id="44087" Ctrl="yes" Alt="no" Shift="no" Key="50" />
+        <Shortcut id="44088" Ctrl="yes" Alt="no" Shift="no" Key="51" />
+        <Shortcut id="44089" Ctrl="yes" Alt="no" Shift="no" Key="52" />
+        <Shortcut id="44090" Ctrl="yes" Alt="no" Shift="no" Key="53" />
+        <Shortcut id="44091" Ctrl="yes" Alt="no" Shift="no" Key="54" />
+        <Shortcut id="44092" Ctrl="yes" Alt="no" Shift="no" Key="55" />
+        <Shortcut id="44093" Ctrl="yes" Alt="no" Shift="no" Key="56" />
+        <Shortcut id="44094" Ctrl="yes" Alt="no" Shift="no" Key="57" />
+        <Shortcut id="43039" Ctrl="no" Alt="no" Shift="no" Key="0" />
+        <Shortcut id="43040" Ctrl="no" Alt="no" Shift="no" Key="0" />
+        <Shortcut id="43041" Ctrl="no" Alt="no" Shift="no" Key="0" />
+        <Shortcut id="43042" Ctrl="no" Alt="no" Shift="no" Key="0" />
+        <Shortcut id="43043" Ctrl="no" Alt="no" Shift="no" Key="0" />
+        <Shortcut id="42012" Ctrl="yes" Alt="no" Shift="no" Key="76" />
+    </InternalCommands>
+    <Macros>
+        <Macro name="Trim Trailing Space and Save" Ctrl="no" Alt="yes" Shift="yes" Key="83">
+            <Action type="2" message="0" wParam="42024" lParam="0" sParam="" />
+            <Action type="2" message="0" wParam="41006" lParam="0" sParam="" />
+        </Macro>
+    </Macros>
+    <UserDefinedCommands>
+        <Command name="Launch in Firefox" Ctrl="no" Alt="no" Shift="no" Key="0">firefox &quot;$(FULL_CURRENT_PATH)&quot;</Command>
+        <Command name="Launch in IE" Ctrl="no" Alt="no" Shift="no" Key="0">iexplore &quot;$(FULL_CURRENT_PATH)&quot;</Command>
+        <Command name="Launch in Chrome" Ctrl="no" Alt="no" Shift="no" Key="0">chrome &quot;$(FULL_CURRENT_PATH)&quot;</Command>
+        <Command name="Launch in Safari" Ctrl="no" Alt="no" Shift="no" Key="0">safari &quot;$(FULL_CURRENT_PATH)&quot;</Command>
+        <Command name="Get PHP help" Ctrl="no" Alt="yes" Shift="no" Key="112">http://www.php.net/$(CURRENT_WORD)</Command>
+        <Command name="Wikipedia Search" Ctrl="no" Alt="yes" Shift="no" Key="114">https://en.wikipedia.org/wiki/Special:Search?search=$(CURRENT_WORD)</Command>
+        <Command name="Open file in another instance" Ctrl="no" Alt="yes" Shift="no" Key="117">$(NPP_FULL_FILE_PATH) $(CURRENT_WORD) -nosession -multiInst</Command>
+        <Command name="Send via Outlook" Ctrl="yes" Alt="yes" Shift="yes" Key="79">outlook /a &quot;$(FULL_CURRENT_PATH)&quot;</Command>
+    </UserDefinedCommands>
+    <PluginCommands>
+        <PluginCommand moduleName="XMLTools.dll" internalID="16" Ctrl="no" Alt="yes" Shift="yes" Key="70" />
+        <PluginCommand moduleName="XMLTools.dll" internalID="17" Ctrl="no" Alt="no" Shift="no" Key="0" />
+        <PluginCommand moduleName="XMLTools.dll" internalID="19" Ctrl="no" Alt="no" Shift="no" Key="0" />
+        <PluginCommand moduleName="XMLTools.dll" internalID="23" Ctrl="no" Alt="no" Shift="no" Key="0" />
+        <PluginCommand moduleName="XMLTools.dll" internalID="31" Ctrl="no" Alt="no" Shift="no" Key="0" />
+        <PluginCommand moduleName="XMLTools.dll" internalID="32" Ctrl="no" Alt="no" Shift="no" Key="0" />
+        <PluginCommand moduleName="XMLTools.dll" internalID="4" Ctrl="no" Alt="no" Shift="no" Key="0" />
+        <PluginCommand moduleName="JsonTools.dll" internalID="1" Ctrl="no" Alt="yes" Shift="yes" Key="70" />
+        <PluginCommand moduleName="JsonTools.dll" internalID="2" Ctrl="no" Alt="no" Shift="no" Key="0" />
+        <PluginCommand moduleName="JsonTools.dll" internalID="3" Ctrl="no" Alt="no" Shift="no" Key="0" />
+        <PluginCommand moduleName="JsonTools.dll" internalID="7" Ctrl="no" Alt="no" Shift="no" Key="0" />
+        <PluginCommand moduleName="JsonTools.dll" internalID="8" Ctrl="no" Alt="no" Shift="no" Key="0" />
+        <PluginCommand moduleName="JsonTools.dll" internalID="10" Ctrl="no" Alt="no" Shift="no" Key="0" />
+    </PluginCommands>
+    <ScintillaKeys>
+        <ScintKey ScintID="2338" menuCmdID="0" Ctrl="yes" Alt="no" Shift="yes" Key="68" />
+        <ScintKey ScintID="2469" menuCmdID="0" Ctrl="yes" Alt="no" Shift="no" Key="0" />
+        <ScintKey ScintID="2404" menuCmdID="42010" Ctrl="yes" Alt="no" Shift="no" Key="68" />
+        <ScintKey ScintID="2337" menuCmdID="0" Ctrl="no" Alt="no" Shift="no" Key="0" />
+    </ScintillaKeys>
+</NotepadPlus>
