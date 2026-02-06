@@ -1,0 +1,27 @@
+<Configuration status="WARN">
+	<Properties>
+		<Property name="console.style.thread">FATAL=BG_#8B0000 #FFFFFF bold, WARN=#C75C00 bold, DEBUG=black, TRACE=bright_black</Property>
+		<Property name="console.style.message">WARN=#C75C00, INFO=black, DEBUG=#6E6E6E, TRACE=bright_black</Property>
+	</Properties>
+
+	<Appenders>
+		<Console name="console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} %highlight{[%t]}{${console.style.thread}} (%F:%L) - %highlight{%m%n}{${console.style.message}}" />
+		</Console>
+		<RollingFile name="rollingFile" fileName="/logs/stw-game-automation.log" filePattern="/logs/stw-game-automation-%i.log" append="false">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} %-5p [%t] %c{1.}:%L - %m%n" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="100MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="1" />
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+		<Logger name="ksy.game" level="DEBUG" />
+
+		<Root level="INFO">
+			<AppenderRef ref="console" />
+			<AppenderRef ref="rollingFile" />
+		</Root>
+	</Loggers>
+</Configuration>
