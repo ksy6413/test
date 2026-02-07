@@ -1,6 +1,6 @@
 <Configuration status="WARN">
 	<Properties>
-		<Property name="app.log.dir">${sys:log.dir:-/logs}</Property>
+		<Property name="app.log.dir">${sys:app.log.dir:-/logs}</Property>
 		<Property name="app.log.file-prefix">stw-game-automation</Property>
 		<Property name="console.style.thread">FATAL=BG_#8B0000 #FFFFFF bold, WARN=#C75C00 bold, DEBUG=black, TRACE=bright_black</Property>
 		<Property name="console.style.message">WARN=#C75C00, INFO=black, DEBUG=#6E6E6E, TRACE=bright_black</Property>
