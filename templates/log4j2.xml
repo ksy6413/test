@@ -8,7 +8,7 @@
 
 	<Appenders>
 		<Console name="console" target="SYSTEM_OUT">
-			<PatternLayout pattern="%d{HH:mm:ss.SSS} %highlight{[%t]}{${console.style.thread}} (%F:%L) - %highlight{%m%n}{${console.style.message}}" />
+			<PatternLayout disableAnsi="false" pattern="%d{HH:mm:ss.SSS} %highlight{[%t]}{${console.style.thread}} (%F:%L) - %highlight{%m%n}{${console.style.message}}" />
 		</Console>
 		<RollingFile name="rollingFile" fileName="${app.log.dir}/${app.log.file-prefix}.log" filePattern="${app.log.dir}/${app.log.file-prefix}-%i.log" append="false">
 			<PatternLayout pattern="%d{HH:mm:ss.SSS} %-5p [%t] %c{1.}:%L - %m%n" />
