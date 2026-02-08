@@ -1,0 +1,34 @@
+$ErrorActionPreference = 'Stop'
+
+$path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
+$name = 'Start_TrackProgs'
+$desiredValue = 1
+
+try {
+    # Ensure the key exists
+    New-Item -Path $path -Force | Out-Null
+
+    # Set value
+    Set-ItemProperty -Path $path -Name $name -Type DWord -Value $desiredValue
+
+    # Verify by reading it back
+    $actualValue = Get-ItemPropertyValue -Path $path -Name $name
+
+    if ($actualValue -eq $desiredValue) {
+        Write-Host "OK: $name set to $actualValue (Enabled)" -ForegroundColor Green
+    } else {
+        Write-Host "WARN: $name read-back is $actualValue (expected $desiredValue)" -ForegroundColor Yellow
+    }
+
+    # Optional: open Settings near the area
+    Start-Process 'ms-settings:privacy'
+}
+catch {
+    Write-Host "ERROR: Failed to set/verify $name." -ForegroundColor Red
+    Write-Host $_.Exception.Message -ForegroundColor Red
+}
+finally {
+    Write-Host ""
+    Write-Host "Press any key to close..." -ForegroundColor Cyan
+    $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
+}
