@@ -1,34 +1,24 @@
-$ErrorActionPreference = 'Stop'
+Option Explicit
 
-$path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
-$name = 'Start_TrackProgs'
-$desiredValue = 1
+Public Sub EmptyItemsInAlertAndDirectChildren()
+    Dim ns As Outlook.NameSpace
+    Dim alertFolder As Outlook.Folder
 
-try {
-    # Ensure the key exists
-    New-Item -Path $path -Force | Out-Null
+    Set ns = Application.GetNamespace("MAPI")
+    Set alertFolder = ns.PickFolder 'Pick your "Alert" folder
+    If alertFolder Is Nothing Then Exit Sub
 
-    # Set value
-    Set-ItemProperty -Path $path -Name $name -Type DWord -Value $desiredValue
+    DeleteAllItemsInFolder alertFolder
 
-    # Verify by reading it back
-    $actualValue = Get-ItemPropertyValue -Path $path -Name $name
+    Dim child As Outlook.Folder
+    For Each child In alertFolder.Folders
+        DeleteAllItemsInFolder child
+    Next child
+End Sub
 
-    if ($actualValue -eq $desiredValue) {
-        Write-Host "OK: $name set to $actualValue (Enabled)" -ForegroundColor Green
-    } else {
-        Write-Host "WARN: $name read-back is $actualValue (expected $desiredValue)" -ForegroundColor Yellow
-    }
-
-    # Optional: open Settings near the area
-    Start-Process 'ms-settings:privacy'
-}
-catch {
-    Write-Host "ERROR: Failed to set/verify $name." -ForegroundColor Red
-    Write-Host $_.Exception.Message -ForegroundColor Red
-}
-finally {
-    Write-Host ""
-    Write-Host "Press any key to close..." -ForegroundColor Cyan
-    $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
-}
+Private Sub DeleteAllItemsInFolder(ByVal f As Outlook.Folder)
+    Dim i As Long
+    For i = f.Items.Count To 1 Step -1
+        f.Items(i).Delete   'moves to Deleted Items
+    Next i
+End Sub
