@@ -1,24 +1,117 @@
 Option Explicit
 
-Public Sub EmptyItemsInAlertAndDirectChildren()
-    Dim ns As Outlook.NameSpace
+' === CONFIG ===
+Private Const ALERT_FOLDER_NAME As String = "Alert"
+' Optional: set to your mailbox/store display name to disambiguate (leave "" to use default store)
+Private Const TARGET_STORE_DISPLAY_NAME As String = ""
+
+Public Sub EmptyAlertFolderAndDirectChildren_NoPrompt()
     Dim alertFolder As Outlook.Folder
+    Set alertFolder = FindAlertFolder()
 
-    Set ns = Application.GetNamespace("MAPI")
-    Set alertFolder = ns.PickFolder 'Pick your "Alert" folder
-    If alertFolder Is Nothing Then Exit Sub
+    If alertFolder Is Nothing Then
+        MsgBox "Could not find folder named '" & ALERT_FOLDER_NAME & "'. " & _
+               "Edit ALERT_FOLDER_NAME (and optionally TARGET_STORE_DISPLAY_NAME).", vbExclamation
+        Exit Sub
+    End If
 
+    ' Delete items in Alert itself
     DeleteAllItemsInFolder alertFolder
 
+    ' Delete items in each direct child folder (depth = 1)
     Dim child As Outlook.Folder
     For Each child In alertFolder.Folders
         DeleteAllItemsInFolder child
     Next child
+
+    MsgBox "Done: emptied '" & alertFolder.FolderPath & "' and its direct subfolders.", vbInformation
 End Sub
+
+Private Function FindAlertFolder() As Outlook.Folder
+    Dim ns As Outlook.NameSpace
+    Set ns = Application.GetNamespace("MAPI")
+
+    ' 1) Fast path: Alert under default Inbox (most common)
+    Dim inbox As Outlook.Folder
+    Set inbox = ns.GetDefaultFolder(olFolderInbox)
+
+    Dim f As Outlook.Folder
+    Set f = GetDirectChildFolderIgnoreCase(inbox, ALERT_FOLDER_NAME)
+    If Not f Is Nothing Then
+        Set FindAlertFolder = f
+        Exit Function
+    End If
+
+    ' 2) Try Inbox of a specific store (if configured), else default store
+    Dim st As Outlook.Store
+    If TARGET_STORE_DISPLAY_NAME <> "" Then
+        For Each st In ns.Stores
+            If LCase$(st.DisplayName) = LCase$(TARGET_STORE_DISPLAY_NAME) Then
+                On Error Resume Next
+                Set inbox = st.GetDefaultFolder(olFolderInbox)
+                On Error GoTo 0
+                If Not inbox Is Nothing Then
+                    Set f = GetDirectChildFolderIgnoreCase(inbox, ALERT_FOLDER_NAME)
+                    If Not f Is Nothing Then
+                        Set FindAlertFolder = f
+                        Exit Function
+                    End If
+                End If
+                Exit For
+            End If
+        Next st
+    End If
+
+    ' 3) Fallback: search entire store tree for first folder named "Alert" (iterative, no recursion)
+    If TARGET_STORE_DISPLAY_NAME <> "" Then
+        For Each st In ns.Stores
+            If LCase$(st.DisplayName) = LCase$(TARGET_STORE_DISPLAY_NAME) Then
+                Set FindAlertFolder = FindFirstFolderByName_BFS(st.GetRootFolder, ALERT_FOLDER_NAME)
+                Exit Function
+            End If
+        Next st
+    Else
+        Set FindAlertFolder = FindFirstFolderByName_BFS(ns.DefaultStore.GetRootFolder, ALERT_FOLDER_NAME)
+        Exit Function
+    End If
+End Function
+
+Private Function GetDirectChildFolderIgnoreCase(ByVal parent As Outlook.Folder, ByVal childName As String) As Outlook.Folder
+    Dim child As Outlook.Folder
+    For Each child In parent.Folders
+        If LCase$(child.Name) = LCase$(childName) Then
+            Set GetDirectChildFolderIgnoreCase = child
+            Exit Function
+        End If
+    Next child
+End Function
+
+' Breadth-first search across a store tree (no recursion). Returns first exact-name match.
+Private Function FindFirstFolderByName_BFS(ByVal root As Outlook.Folder, ByVal targetName As String) As Outlook.Folder
+    Dim q As Collection
+    Set q = New Collection
+    q.Add root
+
+    Do While q.Count > 0
+        Dim cur As Outlook.Folder
+        Set cur = q.Item(1)
+        q.Remove 1
+
+        If LCase$(cur.Name) = LCase$(targetName) Then
+            Set FindFirstFolderByName_BFS = cur
+            Exit Function
+        End If
+
+        Dim child As Outlook.Folder
+        For Each child In cur.Folders
+            q.Add child
+        Next child
+    Loop
+End Function
 
 Private Sub DeleteAllItemsInFolder(ByVal f As Outlook.Folder)
     Dim i As Long
     For i = f.Items.Count To 1 Step -1
-        f.Items(i).Delete   'moves to Deleted Items
+        f.Items(i).Delete  'moves to Deleted Items
     Next i
 End Sub
