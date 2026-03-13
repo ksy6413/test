@@ -1,1 +1,144 @@
-test
+
+#pwsh.exe -File .\Mirror-SpringBootLog.ps1 `
+#  -Url "http://<host>:<port>/actuator/logfile" `
+#  -LocalFile "C:\Temp\springboot-live.log" `
+#  -PollSeconds 2
+
+######################################################
+
+
+param(
+    [Parameter(Mandatory = $true)]
+    [string] $Url,
+
+    [string] $LocalFile = "$env:TEMP\springboot-live.log",
+
+    [int] $PollSeconds = 2
+)
+
+Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
+
+function Ensure-ParentDirectory {
+    param([string] $Path)
+
+    $parent = Split-Path -Parent $Path
+    if ($parent -and -not (Test-Path $parent)) {
+        New-Item -ItemType Directory -Path $parent -Force | Out-Null
+    }
+}
+
+function Append-Bytes {
+    param(
+        [string] $Path,
+        [byte[]] $Bytes
+    )
+
+    Ensure-ParentDirectory -Path $Path
+
+    $stream = [System.IO.File]::Open(
+        $Path,
+        [System.IO.FileMode]::Append,
+        [System.IO.FileAccess]::Write,
+        [System.IO.FileShare]::ReadWrite
+    )
+
+    try {
+        $stream.Write($Bytes, 0, $Bytes.Length)
+        $stream.Flush()
+    }
+    finally {
+        $stream.Dispose()
+    }
+}
+
+function Overwrite-Bytes {
+    param(
+        [string] $Path,
+        [byte[]] $Bytes
+    )
+
+    Ensure-ParentDirectory -Path $Path
+    [System.IO.File]::WriteAllBytes($Path, $Bytes)
+}
+
+$handler = [System.Net.Http.HttpClientHandler]::new()
+$client = [System.Net.Http.HttpClient]::new($handler)
+$client.Timeout = [TimeSpan]::FromSeconds(30)
+
+[long] $offset = 0
+if (Test-Path $LocalFile) {
+    $offset = (Get-Item $LocalFile).Length
+}
+
+Write-Host "Polling: $Url"
+Write-Host "Mirroring to: $LocalFile"
+Write-Host "Starting offset: $offset bytes"
+
+while ($true) {
+    $request = $null
+    $response = $null
+
+    try {
+        $request = [System.Net.Http.HttpRequestMessage]::new(
+            [System.Net.Http.HttpMethod]::Get,
+            $Url
+        )
+
+        if ($offset -gt 0) {
+            [void] $request.Headers.TryAddWithoutValidation("Range", "bytes=$offset-")
+        }
+
+        $response = $client.SendAsync(
+            $request,
+            [System.Net.Http.HttpCompletionOption]::ResponseHeadersRead
+        ).GetAwaiter().GetResult()
+
+        $statusCode = [int] $response.StatusCode
+        $bytes = $response.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult()
+
+        switch ($statusCode) {
+            206 {
+                if ($bytes.Length -gt 0) {
+                    Append-Bytes -Path $LocalFile -Bytes $bytes
+                    $offset += $bytes.Length
+                    Write-Host "$(Get-Date -Format o) appended $($bytes.Length) bytes (offset=$offset)"
+                }
+            }
+
+            200 {
+                if ($offset -eq 0) {
+                    Overwrite-Bytes -Path $LocalFile -Bytes $bytes
+                    $offset = $bytes.Length
+                    Write-Host "$(Get-Date -Format o) initial full download $($bytes.Length) bytes"
+                }
+                else {
+                    # Usually means Range was ignored, or the server returned the whole file.
+                    # Safest behavior is to replace the local mirror to avoid duplicates.
+                    Overwrite-Bytes -Path $LocalFile -Bytes $bytes
+                    $offset = $bytes.Length
+                    Write-Warning "$(Get-Date -Format o) server returned 200 instead of 206; local mirror replaced"
+                }
+            }
+
+            416 {
+                # Requested range not satisfiable: likely rotation/truncation.
+                Write-Warning "$(Get-Date -Format o) remote log likely rotated or truncated; resetting offset"
+                $offset = 0
+            }
+
+            default {
+                Write-Warning "$(Get-Date -Format o) unexpected HTTP status: $statusCode"
+            }
+        }
+    }
+    catch {
+        Write-Warning "$(Get-Date -Format o) polling error: $($_.Exception.Message)"
+    }
+    finally {
+        if ($response) { $response.Dispose() }
+        if ($request) { $request.Dispose() }
+    }
+
+    Start-Sleep -Seconds $PollSeconds
+}test
