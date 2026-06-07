@@ -1,0 +1,220 @@
+[
+    // ============================================================================
+    // Focus recovery: Escape from workbench regions back to the active editor
+    // ============================================================================
+
+    // Primary Side Bar / Secondary Side Bar / Panel → editor.
+    // Keep terminal excluded so shell tools such as vim, less, and fzf still receive Escape.
+    {
+        "key": "escape",
+        "command": "workbench.action.focusActiveEditorGroup",
+        "when": "sideBarFocus && !inputFocus && !suggestWidgetVisible && !findWidgetVisible"
+    },
+    {
+        "key": "escape",
+        "command": "workbench.action.focusActiveEditorGroup",
+        "when": "auxiliaryBarFocus && !inputFocus"
+    },
+    {
+        "key": "escape",
+        "command": "workbench.action.focusActiveEditorGroup",
+        "when": "panelFocus && !terminalFocus && !inputFocus"
+    },
+
+    // ============================================================================
+    // Editor line operations
+    // ============================================================================
+
+    // Move lines with Shift+Alt+Up/Down; free Alt+Up/Down for other use.
+    {
+        "key": "shift+alt+down",
+        "command": "editor.action.moveLinesDownAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "shift+alt+up",
+        "command": "editor.action.moveLinesUpAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "shift+alt+down",
+        "command": "-editor.action.copyLinesDownAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "shift+alt+up",
+        "command": "-editor.action.copyLinesUpAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "alt+down",
+        "command": "-editor.action.moveLinesDownAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "alt+up",
+        "command": "-editor.action.moveLinesUpAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+
+    // Copy current line down with Ctrl+D instead of "Add Selection to Next Find Match".
+    {
+        "key": "ctrl+d",
+        "command": "editor.action.copyLinesDownAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+d",
+        "command": "-editor.action.addSelectionToNextFindMatch",
+        "when": "editorFocus"
+    },
+    {
+        "key": "ctrl+d",
+        "command": "-notebook.addFindMatchToSelection",
+        "when": "config.notebook.multiCursor.enabled && notebookCellEditorFocused && activeEditor == 'workbench.editor.notebook'"
+    },
+
+    // Delete current line with Ctrl+Shift+D. Use editorTextFocus, not textInputFocus,
+    // to avoid surprising behavior in non-editor text inputs.
+    {
+        "key": "ctrl+shift+d",
+        "command": "editor.action.deleteLines",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+shift+k",
+        "command": "-editor.action.deleteLines",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+shift+d",
+        "command": "-workbench.view.debug",
+        "when": "viewContainer.workbench.view.debug.enabled"
+    },
+    {
+        "key": "ctrl+shift+d",
+        "command": "-extension.debugMsgBox",
+        "when": "editorTextFocus && editorLangId == 'autoit'"
+    },
+
+    // Multi-cursor: use Alt+J for "Add Selection to Next Find Match".
+    {
+        "key": "alt+j",
+        "command": "editor.action.addSelectionToNextFindMatch",
+        "when": "editorFocus"
+    },
+    {
+        "key": "alt+j",
+        "command": "notebook.addFindMatchToSelection",
+        "when": "config.notebook.multiCursor.enabled && notebookCellEditorFocused && activeEditor == 'workbench.editor.notebook'"
+    },
+
+    // ============================================================================
+    // Workbench layout and view navigation
+    // ============================================================================
+
+    // Alt+number is reserved for workbench regions/views, not editor tabs.
+    {
+        "key": "alt+1",
+        "command": "-workbench.action.openEditorAtIndex1"
+    },
+    {
+        "key": "alt+2",
+        "command": "-workbench.action.openEditorAtIndex2"
+    },
+    {
+        "key": "alt+3",
+        "command": "-workbench.action.openEditorAtIndex3"
+    },
+    {
+        "key": "alt+4",
+        "command": "-workbench.action.openEditorAtIndex4"
+    },
+    {
+        "key": "alt+5",
+        "command": "-workbench.action.openEditorAtIndex5"
+    },
+    {
+        "key": "alt+6",
+        "command": "-workbench.action.openEditorAtIndex6"
+    },
+    {
+        "key": "alt+7",
+        "command": "-workbench.action.openEditorAtIndex7"
+    },
+    {
+        "key": "alt+8",
+        "command": "-workbench.action.openEditorAtIndex8"
+    },
+    {
+        "key": "alt+9",
+        "command": "-workbench.action.openEditorAtIndex9"
+    },
+
+    // Alt+1 toggles the Primary Side Bar as a region.
+    // If another primary-side-bar view is open, Alt+1 closes it rather than switching to Explorer.
+    {
+        "key": "alt+1",
+        "command": "workbench.view.explorer",
+        "when": "!sideBarVisible"
+    },
+    {
+        "key": "alt+1",
+        "command": "workbench.action.closeSidebar",
+        "when": "sideBarVisible"
+    },
+
+    {
+        "key": "alt+2",
+        "command": "workbench.action.toggleAuxiliaryBar"
+    },
+    {
+        "key": "alt+3",
+        "command": "workbench.action.togglePanel"
+    },
+
+    // Alt+Q toggles Source Control specifically.
+    {
+        "key": "alt+q",
+        "command": "workbench.view.scm",
+        "when": "activeViewlet != 'workbench.view.scm'"
+    },
+    {
+        "key": "alt+q",
+        "command": "workbench.action.closeSidebar",
+        "when": "activeViewlet == 'workbench.view.scm'"
+    },
+
+    // ============================================================================
+    // Window / mode toggles
+    // ============================================================================
+
+    {
+        "key": "alt+`",
+        "command": "workbench.action.toggleZenMode",
+        "when": "!isAuxiliaryWindowFocusedContext"
+    },
+    {
+        "key": "alt+`",
+        "command": "-workbench.action.editorDictation.start",
+        "when": "hasSpeechProvider && !editorReadonly && !speechToTextInProgress"
+    },
+
+    // ============================================================================
+    // Git / Source Control
+    // ============================================================================
+
+    {
+        "key": "alt+a",
+        "command": "github.copilot.git.generateCommitMessage"
+    },
+    {
+        "key": "alt+u",
+        "command": "git.pull",
+        "when": "gitOpenRepositoryCount >= 1"
+    },
+    {
+        "key": "alt+c",
+        "command": "git.commit"
+    }
+]
